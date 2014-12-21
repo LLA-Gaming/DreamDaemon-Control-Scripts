@@ -3,7 +3,7 @@
 import argparse
 from os.path import basename
 from subprocess import call
-from restart_dreamdaemon import get_dreamdaemon, restart_server, running_dreamdaemons
+from daemon import *
 
 PATH_TO_ADMINS = "/"
 PATH_TO_CRONTAB = "/"
@@ -16,37 +16,27 @@ def list_daemons(args):
   for daemon in daemons:
     print("Daemon: {0}".format(" ".join(daemon.cmdline())))
 
-def stop_daemon(args, force=False):
-  process = get_dreamdaemon(args.dmb_name)
-  if process:
-    if force:
-      print("Process found, sending SIGKILL")
-      process.kill()
-    else:
-      print("Process found, sending SIGTERM.")
-      process.terminate()
-  else:
-    print("No process found.")
+def start_daemon(args):
+  call(["crontab", PATH_TO_CRONTAB])
+  print("Starting daemon running {0}".format(args.dmb_path))
+  start_if_stopped(args.dmb_path, args.dd_args)
 
 def stop_default_daemon(args):
   call(["crontab", "-r"])
   args.dmb_name = basename(PATH_TO_DMB)
   print("Stopping daemon running {0}".format(args.dmb_name))
-  stop_daemon(args)
+  stop_daemon(args.dmb_name)
 
 def restart_default_daemon(args):
   args.dmb_name = basename(PATH_TO_DMB)
   print("Stopping daemon running {0}".format(args.dmb_name))
-  stop_daemon(args, force=True)
-  print("Starting new daemon running {0}".format(args.dmb_name))
-  start_if_stopped_default()
-
-def start_if_stopped_default():
-  restart_server(PATH_TO_DMB, [PORT] + DREAM_DAEMON_ARGS)
+  stop_daemon(args.dmb_name, force=True)
+  start_default_daemon(args)
 
 def start_default_daemon(args):
-  call(["crontab", PATH_TO_CRONTAB])
-  start_if_stopped_default()
+  args.dmb_path = PATH_TO_DMB
+  args.dd_args = [PORT] + DREAM_DAEMON_ARGS
+  start_daemon(args)
 
 def edit_admins(args):
   call(["nano", PATH_TO_ADMINS])
@@ -57,6 +47,11 @@ def _main():
 
   parser_list = subparsers.add_parser("list", help="Lists all running daemons")
   parser_list.set_defaults(func=list_daemons)
+
+  parser_start = subparsers.add_parser("start", help="Starts (if not currently running) the DreamDaemon instance specified by the named '.dmb.'")
+  parser_start.add_argument("dmb_path", metavar="/foo/bar/*.dmb", help="Path to the .dmb used by the DreamDaemon instance")
+  parser_start.add_argument("dd_args", metavar="...", nargs=argparse.REMAINDER, help="The arguments to pass to DreamDaemon, excluding the .dmb")
+  parser_start.set_default(func=start_daemon)
   
   parser_stop = subparsers.add_parser("stop")
   parser_stop.add_argument("dmb_name", help="Name of the dmb (with or without .dmb) of the daemon you want to kill.")
