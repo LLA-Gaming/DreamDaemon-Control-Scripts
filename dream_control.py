@@ -57,16 +57,22 @@ def _main():
   parser_stop.add_argument("dmb_name", help="Name of the dmb (with or without .dmb) of the daemon you want to kill.")
   parser_stop.set_defaults(func=stop_daemon)
 
-  parser_stop_default = subparsers.add_parser("stop_default")
+  parser_stop_default = subparsers.add_parser("stop_default", 
+                                              help="""Stops the default daemon running and prevents autorestart.
+                                                      Currently configured to: """ + PATH_TO_DMB)
   parser_stop_default.set_defaults(func=stop_default_daemon)
 
-  parser_restart_default = subparsers.add_parser("restart_default")
+  parser_restart_default = subparsers.add_parser("restart_default",
+                                                 help="""Immediately kills (SIGKILL) the default daemon and starts
+                                                         it again. Currently configured to: """ + PATH_TO_DMB)
   parser_restart_default.set_defaults(func=restart_default_daemon)
 
-  parser_start_default = subparsers.add_parser("start_default")
+  parser_start_default = subparsers.add_parser("start_default",
+                                               help="""Starts the default daemon.
+                                                       Currently configured to: """ + PATH_TO_DMB)
   parser_start_default.set_defaults(func=start_default_daemon)
 
-  parser_edit_admins = subparsers.add_parser("edit_admins")
+  parser_edit_admins = subparsers.add_parser("edit_admins", help="Opens admins.txt in nano.")
   parser_edit_admins.set_defaults(func=edit_admins)
 
   args = parser.parse_args()
