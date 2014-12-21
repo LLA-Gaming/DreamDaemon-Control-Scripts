@@ -11,10 +11,10 @@ PATH_TO_DMB = "/"
 PORT = "52600"
 DREAM_DAEMON_ARGS = ["-logself", "-trusted", "-unsafe_diag"]
 
-def list_daemons():
+def list_daemons(args):
   daemons = running_dreamdaemons()
   for daemon in daemons:
-    print("Daemon: {0}".format(" ".join(daemon.cmdline)))
+    print("Daemon: {0}".format(" ".join(daemon.cmdline())))
 
 def stop_daemon(args):
   call(["crontab", "-r"])
@@ -25,18 +25,18 @@ def stop_default_daemon(args):
   args.dmb_name = basename(PATH_TO_DMB)
   stop_daemon(args)
 
-def restart_default_daemon():
+def restart_default_daemon(args):
   restart_server(PATH_TO_DMB, [PORT] + DREAM_DAEMON_ARGS)
 
-def start_default_daemon():
+def start_default_daemon(args):
   call(["crontab", PATH_TO_CRONTAB])
   restart_daemon()
 
-def edit_admins():
+def edit_admins(args):
   call(["nano", PATH_TO_ADMINS])
 
 def _main():
-  parser = argparse.ArgumentParser(desc="Commands for controlling DreamDaemon instances")
+  parser = argparse.ArgumentParser(description="Commands for controlling DreamDaemon instances")
   subparsers = parser.add_subparsers()
 
   parser_list = subparsers.add_parser("list", help="Lists all running daemons")
