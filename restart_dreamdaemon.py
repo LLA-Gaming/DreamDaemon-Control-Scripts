@@ -15,9 +15,14 @@ def running_dreamdaemons():
   return [process for process in psutil.process_iter() 
           if process.name() == PROCESS_NAME]
 
-def is_daemon_running(dmb_name):
+def get_dreamdaemon(dmb_name):
   for daemon in running_dreamdaemons():
-    if dmb_name in daemon.cmdline(): return True
+    for item in daemon.cmdline():
+      if dmb_name in item: return daemon
+  return False
+
+def is_daemon_running(dmb_name):
+  if get_dreamdaemon(dmb_name): return True
   return False
 
 def restart_server(dmb_path, dreamdaemon_args):
