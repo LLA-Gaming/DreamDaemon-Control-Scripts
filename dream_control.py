@@ -8,7 +8,7 @@ from restart_dreamdaemon import get_dreamdaemon, restart_server, running_dreamda
 PATH_TO_ADMINS = "/"
 PATH_TO_CRONTAB = "/"
 PATH_TO_DMB = "/"
-PORT = "52600"
+PORT = "52601"
 DREAM_DAEMON_ARGS = ["-logself", "-trusted", "-unsafe_diag"]
 
 def list_daemons(args):
@@ -16,21 +16,37 @@ def list_daemons(args):
   for daemon in daemons:
     print("Daemon: {0}".format(" ".join(daemon.cmdline())))
 
-def stop_daemon(args):
-  call(["crontab", "-r"])
+def stop_daemon(args, force=False):
   process = get_dreamdaemon(args.dmb_name)
-  process.terminate()
+  if process:
+    if force:
+      print("Process found, sending SIGKILL")
+      process.kill()
+    else:
+      print("Process found, sending SIGTERM.")
+      process.terminate()
+  else:
+    print("No process found.")
 
 def stop_default_daemon(args):
+  call(["crontab", "-r"])
   args.dmb_name = basename(PATH_TO_DMB)
+  print("Stopping daemon running {0}".format(args.dmb_name))
   stop_daemon(args)
 
 def restart_default_daemon(args):
+  args.dmb_name = basename(PATH_TO_DMB)
+  print("Stopping daemon running {0}".format(args.dmb_name))
+  stop_daemon(args, force=True)
+  print("Starting new daemon running {0}".format(args.dmb_name))
+  start_if_stopped_default()
+
+def start_if_stopped_default():
   restart_server(PATH_TO_DMB, [PORT] + DREAM_DAEMON_ARGS)
 
 def start_default_daemon(args):
   call(["crontab", PATH_TO_CRONTAB])
-  restart_daemon()
+  start_if_stopped_default()
 
 def edit_admins(args):
   call(["nano", PATH_TO_ADMINS])
