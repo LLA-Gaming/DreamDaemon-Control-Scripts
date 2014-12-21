@@ -19,7 +19,7 @@ def list_daemons(args):
 def start_daemon(args):
   call(["crontab", PATH_TO_CRONTAB])
   print("Starting daemon running {0}".format(args.dmb_path))
-  start_if_stopped(args.dmb_path, args.dd_args)
+  start_daemon_if_stopped(args.dmb_path, args.dd_args)
 
 def stop_default_daemon(args):
   call(["crontab", "-r"])
