@@ -3,7 +3,7 @@
 import psutil
 import argparse
 import subprocess
-import os
+from daemon import create_daemon
 import os.path
 from os.path import basename
 
@@ -24,37 +24,6 @@ def restart_server(dmb_path, dreamdaemon_args):
   if not is_daemon_running(basename(dmb_path)):
     dd_args = [DD_INSTALL_PATH, dmb_path] + dreamdaemon_args
     return create_daemon(dd_args)
-
-def create_daemon(args):
-  try:
-    pid = os.fork() #Fork once, duplicating process
-  except OSError, e:
-    raise Exception, "{:s} [{:d}]".format(e.strerror, e.errno)
-
-  if pid == 0:
-    os.setsid() #Take leadership of a new session and new process group
-    try:
-      pid = os.fork() #Fork again, so no longer leader (can't attach to a terminal, orphaned)
-    except OSError, e:
-      raise Exception, "{:s} [{:d}]".format(e.strerror, e.errno)
-
-    if pid == 0:
-      try:
-        maxfd = os.sysconf("SC_OPEN_MAX")
-      except (AttributeError, ValueError):
-        maxfd = 1024
-
-      for fd in range(maxfd):
-        try:
-          os.close(fd)
-        except OSError: #If fd wasn't open, ignore it
-          pass
-
-      os.execvp(args[0], args)
-    else:
-      os._exit(0)
-  else:
-    return True
 
 def main():
   parser = argparse.ArgumentParser(description="Restarts the DreamDaemon instance specified by the named '.dmb.'")
