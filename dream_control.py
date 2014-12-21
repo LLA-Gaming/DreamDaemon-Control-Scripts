@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import argparse
+import daemon
 from os.path import basename
 from subprocess import call
 from daemon import *
@@ -21,22 +22,25 @@ def start_daemon(args):
   print("Starting daemon running {0}".format(args.dmb_path))
   start_daemon_if_stopped(args.dmb_path, args.dd_args)
 
-def stop_default_daemon(args):
+def start_default_daemon(args):
+  args.dmb_path = PATH_TO_DMB
+  args.dd_args = [PORT] + DREAM_DAEMON_ARGS
+  start_daemon(args)
+
+def stop_daemon(args):
   call(["crontab", "-r"])
-  args.dmb_name = basename(PATH_TO_DMB)
   print("Stopping daemon running {0}".format(args.dmb_name))
-  stop_daemon(args.dmb_name)
+  daemon.stop_daemon(args.dmb_name)
+
+def stop_default_daemon(args):
+  args.dmb_name = basename(PATH_TO_DMB)
+  stop_daemon(args)
 
 def restart_default_daemon(args):
   args.dmb_name = basename(PATH_TO_DMB)
   print("Stopping daemon running {0}".format(args.dmb_name))
   stop_daemon(args.dmb_name, force=True)
   start_default_daemon(args)
-
-def start_default_daemon(args):
-  args.dmb_path = PATH_TO_DMB
-  args.dd_args = [PORT] + DREAM_DAEMON_ARGS
-  start_daemon(args)
 
 def edit_admins(args):
   call(["nano", PATH_TO_ADMINS])
@@ -52,9 +56,9 @@ def _main():
   parser_start.add_argument("dmb_path", metavar="/foo/bar/*.dmb", help="Path to the .dmb used by the DreamDaemon instance")
   parser_start.add_argument("dd_args", metavar="...", nargs=argparse.REMAINDER, help="The arguments to pass to DreamDaemon, excluding the .dmb")
   parser_start.set_defaults(func=start_daemon)
-  
-  parser_stop = subparsers.add_parser("stop")
-  parser_stop.add_argument("dmb_name", help="Name of the dmb (with or without .dmb) of the daemon you want to kill.")
+
+  parser_stop = subparsers.add_parser("stop", help="Stops the DreamDaemon instance specified by the named '.dmb.'")
+  parser_stop.add_argument("dmb_name", metavar="*.dmb", help="Name of the .dmb used by the DreamDaemon instance")
   parser_stop.set_defaults(func=stop_daemon)
 
   parser_stop_default = subparsers.add_parser("stop_default", 
