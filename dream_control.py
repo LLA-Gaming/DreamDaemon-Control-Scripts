@@ -51,7 +51,7 @@ def _main():
   parser_start = subparsers.add_parser("start", help="Starts (if not currently running) the DreamDaemon instance specified by the named '.dmb.'")
   parser_start.add_argument("dmb_path", metavar="/foo/bar/*.dmb", help="Path to the .dmb used by the DreamDaemon instance")
   parser_start.add_argument("dd_args", metavar="...", nargs=argparse.REMAINDER, help="The arguments to pass to DreamDaemon, excluding the .dmb")
-  parser_start.set_default(func=start_daemon)
+  parser_start.set_defaults(func=start_daemon)
   
   parser_stop = subparsers.add_parser("stop")
   parser_stop.add_argument("dmb_name", help="Name of the dmb (with or without .dmb) of the daemon you want to kill.")
