@@ -52,8 +52,9 @@ def edit_admins(args):
   call(["nano", os.path.join(CONFIG[DEFAULT_CONFIG].path, "config/admins.txt")])
 
 def backup(args):
-  print("Beginning backup of {0} to {1}".format(str(args.files), str(args.dest)))
-  if make_backup(args.files, args.dest):
+  config = CONFIGS[args.config]
+  print("Beginning backup of {0} to {1}".format(str(config.backup_files), config.backup_dest))
+  if make_backup(config.path, config.backup_files, config.backup_dest):
     print("Backup successful")
   else:
     print("Backup failed, destination is probably a file")
@@ -100,8 +101,7 @@ def _main():
   parser_edit_admins.set_defaults(func=edit_admins)
 
   parser_backup = subparsers.add_parser("backup", help="Backup a list of files to a directory.")
-  parser_backup.add_argument("dest", help="Destination directory (Doesn't need to exist)")
-  parser_backup.add_argument("files", metavar="file", help="File to copy", nargs="+")
+  parser_backup.add_argument("config", type=int, help="Config number of the chosen configuration, e.g 1, 2, 3.")
   parser_backup.set_defaults(func=backup)
 
   args = parser.parse_args()
