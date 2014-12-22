@@ -76,7 +76,7 @@ def _main():
   parser_start.add_argument("config", type=int, help="Config number of the chosen configuration, e.g 1, 2, 3.")
   parser_start.set_defaults(func=start_daemon)
 
-  parser_stop = subparsers.add_parser("stop", help="Stops the DreamDaemon instance specified by the named '.dmb.'")
+  parser_stop = subparsers.add_parser("stop", help="Stops the DreamDaemon instance specified by the config number.")
   parser_stop.add_argument("config", type=int, help="Config number of the chosen configuration, e.g 1, 2, 3.")
   parser_stop.add_argument("-force", action="store_true", help="Sends SIGKILL instead of SIGTERM - Kills it outright")
   parser_stop.set_defaults(func=stop_daemon)
@@ -100,7 +100,7 @@ def _main():
   parser_edit_admins = subparsers.add_parser("edit_admins", help="Opens admins.txt in nano.")
   parser_edit_admins.set_defaults(func=edit_admins)
 
-  parser_backup = subparsers.add_parser("backup", help="Backup a list of files to a directory.")
+  parser_backup = subparsers.add_parser("backup", help="Backs up the DreamDaemon instance specified by the config number.")
   parser_backup.add_argument("config", type=int, help="Config number of the chosen configuration, e.g 1, 2, 3.")
   parser_backup.set_defaults(func=backup)
 
