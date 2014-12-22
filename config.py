@@ -9,3 +9,5 @@ CONFIGS = [
   "backup_dest": "/"
 }
 ]
+
+DEFAULT_CONFIG = CONFIGS[0]
