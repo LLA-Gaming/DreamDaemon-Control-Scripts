@@ -10,6 +10,15 @@ from config import CONFIGS, DEFAULT_CONFIG
 
 PATH_TO_CRONTAB = "/"
 
+def list_configs(args):
+  count = 0
+  for config in CONFIGS:
+    count += 1
+    print("Config {0}:".format(count))
+    for (key, value) in config.iteritems():
+      print("    {0}: {1}".format(key, value))
+    print("\n")
+
 def list_daemons(args):
   daemons = running_dreamdaemons()
   for daemon in daemons:
@@ -52,6 +61,12 @@ def backup(args):
 def _main():
   parser = argparse.ArgumentParser(description="Commands for controlling DreamDaemon instances")
   subparsers = parser.add_subparsers()
+
+  parser_list_daemons = subparsers.add_parser("list_daemons", help="Lists all running daemons")
+  parser_list_daemons.set_defaults(func=list_daemons)
+
+  parser_list_configs = subparsers.add_parser("list_configs", help="Lists all available configurations")
+  parser_list_configs.set_defaults(func=list_configs)
 
   parser_list = subparsers.add_parser("list", help="Lists all running daemons")
   parser_list.set_defaults(func=list_daemons)
