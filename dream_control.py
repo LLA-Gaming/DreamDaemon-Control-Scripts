@@ -35,12 +35,13 @@ def start_default_daemon(args):
   start_daemon(args)
 
 def stop_daemon(args):
+  config = CONFIGS[args.config]
   call(["crontab", "-r"])
-  print("Stopping daemon running {0}".format(args.dmb_name))
-  daemon.stop_daemon(args.dmb_name, args.force)
+  print("Stopping daemon running {0}".format(config["dmb"]))
+  daemon.stop_daemon(config["dmb"], args.force)
 
 def stop_default_daemon(args):
-  args.dmb_name = CONFIGS[DEFAULT_CONFIG]["dmb"]
+  args.config = DEFAULT_CONFIG
   stop_daemon(args)
 
 def restart_default_daemon(args):
@@ -75,7 +76,7 @@ def _main():
   parser_start.set_defaults(func=start_daemon)
 
   parser_stop = subparsers.add_parser("stop", help="Stops the DreamDaemon instance specified by the named '.dmb.'")
-  parser_stop.add_argument("dmb_name", metavar="*.dmb", help="Name of the .dmb used by the DreamDaemon instance")
+  parser_stop.add_argument("config", type=int, help="Config number of the chosen configuration, e.g 1, 2, 3.")
   parser_stop.add_argument("-force", action="store_true", help="Sends SIGKILL instead of SIGTERM - Kills it outright")
   parser_stop.set_defaults(func=stop_daemon)
 
