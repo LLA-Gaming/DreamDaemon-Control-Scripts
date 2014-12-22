@@ -74,11 +74,11 @@ def is_daemon_running(dmb_name):
   if get_dreamdaemon(dmb_name): return True
   return False
 
-def start_daemon_if_stopped(dmb_path, dreamdaemon_args):
+def start_daemon_if_stopped(dmb_path, port, dreamdaemon_args):
   """
   Starts the daemon specified by arg 1 with the arguments specified by arg 2 
   if no daemon can be found running the dmb (or a dmb by the same name)
   """
   if not is_daemon_running(basename(dmb_path)):
-    dd_args = [DD_INSTALL_PATH, dmb_path] + dreamdaemon_args
+    dd_args = [DD_INSTALL_PATH, dmb_path, port] + dreamdaemon_args
     return create_daemon(dd_args)
