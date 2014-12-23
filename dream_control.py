@@ -6,7 +6,7 @@ from os.path import basename
 from subprocess import call
 from daemon import *
 from backup import make_backup
-from config import CONFIGS, DEFAULT_CONFIG, get_dmb_path
+from config import CONFIGS, DEFAULT_CONFIG
 
 PATH_TO_CRONTAB = "/"
 
@@ -14,7 +14,7 @@ def list_configs(args):
   count = 0
   for config in CONFIGS:
     print("Config {0}:".format(count))
-    for (key, value) in config.iteritems():
+    for (key, value) in config.items():
       print("    {0}: {1}".format(key, value))
     print("\n")
     count += 1
@@ -27,8 +27,8 @@ def list_daemons(args):
 def start_daemon(args):
   config = CONFIGS[args.config]
   call(["crontab", PATH_TO_CRONTAB])
-  print("Starting daemon running {0}".format(config["dmb"]))
-  start_daemon_if_stopped(get_dmb_path(config), config["port"], config["args"])
+  print("Starting daemon running {0}".format(config.dmb))
+  start_daemon_if_stopped(config.get_dmb_path(), config.port, config.args)
 
 def start_default_daemon(args):
   args.config = DEFAULT_CONFIG
@@ -37,8 +37,8 @@ def start_default_daemon(args):
 def stop_daemon(args):
   config = CONFIGS[args.config]
   call(["crontab", "-r"])
-  print("Stopping daemon running {0}".format(config["dmb"]))
-  daemon.stop_daemon(config["dmb"], args.force)
+  print("Stopping daemon running {0}".format(config.dmb))
+  daemon.stop_daemon(config.dmb, args.force)
 
 def stop_default_daemon(args):
   args.config = DEFAULT_CONFIG
@@ -49,7 +49,7 @@ def restart_default_daemon(args):
   start_default_daemon(args)
 
 def edit_admins(args):
-  call(["nano", os.path.join(CONFIG[DEFAULT_CONFIG]["path"], "config/admins.txt")])
+  call(["nano", os.path.join(CONFIG[DEFAULT_CONFIG].path, "config/admins.txt")])
 
 def backup(args):
   print("Beginning backup of {0} to {1}".format(str(args.files), str(args.dest)))
@@ -82,18 +82,18 @@ def _main():
 
   parser_stop_default = subparsers.add_parser("stop_default", 
                                               help="""Stops the default daemon running and prevents autorestart.
-                                                      Currently configured to: """ + CONFIGS[DEFAULT_CONFIG]["path"])
+                                                      Currently configured to: """ + CONFIGS[DEFAULT_CONFIG].path)
   parser_stop_default.add_argument("-force", action="store_true", help="Sends SIGKILL instead of SIGTERM - Kills it outright")
   parser_stop_default.set_defaults(func=stop_default_daemon)
 
   parser_restart_default = subparsers.add_parser("restart_default",
                                                  help="""Immediately kills (SIGKILL) the default daemon and starts
-                                                         it again. Currently configured to: """ + CONFIGS[DEFAULT_CONFIG]["path"])
+                                                         it again. Currently configured to: """ + CONFIGS[DEFAULT_CONFIG].path)
   parser_restart_default.set_defaults(func=restart_default_daemon)
 
   parser_start_default = subparsers.add_parser("start_default",
                                                help="""Starts the default daemon.
-                                                       Currently configured to: """ + CONFIGS[DEFAULT_CONFIG]["path"])
+                                                       Currently configured to: """ + CONFIGS[DEFAULT_CONFIG].path)
   parser_start_default.set_defaults(func=start_default_daemon)
 
   parser_edit_admins = subparsers.add_parser("edit_admins", help="Opens admins.txt in nano.")
