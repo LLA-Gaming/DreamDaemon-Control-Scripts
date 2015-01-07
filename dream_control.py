@@ -7,8 +7,9 @@ from subprocess import call
 from daemon import *
 from backup import make_backup
 from config import CONFIGS, DEFAULT_CONFIG
+from update import update_daemon
 
-PATH_TO_CRONTAB = "/"
+PATH_TO_CRONTAB = ""
 
 def list_configs(args):
   count = 0
@@ -59,6 +60,11 @@ def backup(args):
   else:
     print("Backup failed, destination is probably a file")
 
+def update(args):
+  config = CONFIGS[args.config]
+  print("Beginning update of config {0}. If the server is still running, shutdown is recommended.".format(args.config))
+  update_daemon(config)
+
 def _main():
   parser = argparse.ArgumentParser(description="Commands for controlling DreamDaemon instances")
   subparsers = parser.add_subparsers()
@@ -103,6 +109,11 @@ def _main():
   parser_backup = subparsers.add_parser("backup", help="Backs up the DreamDaemon instance specified by the config number.")
   parser_backup.add_argument("config", type=int, help="Config number of the chosen configuration, e.g 1, 2, 3.")
   parser_backup.set_defaults(func=backup)
+
+
+  parser_update = subparsers.add_parser("update", help="Updates a specific config to the latest version (as per git tag vX.Y)")
+  parser_update.add_argument("config", type=int, help="Config number of the chosen configuration, e.g 1, 2, 3.")
+  parser_update.set_defaults(func=update)
 
   args = parser.parse_args()
   args.func(args)

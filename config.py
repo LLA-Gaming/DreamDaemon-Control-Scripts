@@ -14,12 +14,23 @@ class Config:
 CONFIGS = [
 Config(
   name="Test",
-  path="/",
+  path="",
   dmb="teststation.dmb",
+  dme="tgstation.dme",
   port="52601",
   args=["-logself", "-trusted", "-unsafe_diag"],
+  backup_files=["config/admins.txt", "config/names"],
+  backup_dest=""
+),
+Config(
+  name="Main",
+  path="",
+  dmb="tgstation.dmb",
+  dme="tgstation.dme",
+  port="52600",
+  args=["-logself", "-trusted", "-unsafe_diag"],
   backup_files=["config/admins.txt"],
-  backup_dest="/"
+  backup_dest=""
 )
 ]
 
