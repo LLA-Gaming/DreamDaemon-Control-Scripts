@@ -23,11 +23,17 @@ def git_stash(command="save"):
 def git_fetch():
   invoke_git("fetch", "--all", "--tags")
 
+def is_git_repo(path):
+  return os.path.exists(os.path.join(path, ".git"))
+
 def compile(config):
   subprocess.call(["DreamMaker", config.dme])
 
 def update_daemon(config):
   original_dir = os.getcwd()
+  if not is_git_repo(config.path):
+    print("Target directory is not a git repository.")
+    return False
   os.chdir(config.path)
 
   git_stash()
@@ -46,3 +52,4 @@ def update_daemon(config):
   compile(config)
 
   os.chdir(original_dir)
+  return True
