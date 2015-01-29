@@ -65,6 +65,11 @@ def update(args):
   print("Beginning update of config {0}. If the server is still running, shutdown is recommended.".format(args.config))
   update_daemon(config)
 
+def stop_and_update(args):
+  stop_daemon(args)
+  update(args)
+  start_daemon(args)
+
 def _main():
   parser = argparse.ArgumentParser(description="Commands for controlling DreamDaemon instances")
   subparsers = parser.add_subparsers()
@@ -114,6 +119,12 @@ def _main():
   parser_update = subparsers.add_parser("update", help="Updates a specific config to the latest version (as per git tag vX.Y)")
   parser_update.add_argument("config", type=int, help="Config number of the chosen configuration, e.g 1, 2, 3.")
   parser_update.set_defaults(func=update)
+
+  parser_stop = subparsers.add_parser("update_and_restart", help="Stops the DreamDaemon instance specified by the config number, updates it and starts it again")
+  parser_stop.add_argument("config", type=int, help="Config number of the chosen configuration, e.g 1, 2, 3.")
+  parser_stop.add_argument("-force", action="store_true", help="Sends SIGKILL instead of SIGTERM - Kills it outright")
+  parser_stop.set_defaults(func=stop_and_update)
+
 
   args = parser.parse_args()
   args.func(args)
