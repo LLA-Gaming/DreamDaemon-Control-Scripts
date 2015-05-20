@@ -7,7 +7,7 @@ from time import gmtime, time, strftime
 
 def utc_timestamp():
   time_struct = gmtime(time())
-  return strftime("%H-%m-%Y-%m-%d", time_struct)
+  return strftime("%H-%M-%Y-%m-%d", time_struct)
 
 def make_backup(basedir, files, dest):
   if path.isfile(dest): return False
