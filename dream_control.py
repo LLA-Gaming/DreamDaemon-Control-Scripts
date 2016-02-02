@@ -9,7 +9,7 @@ from backup import make_backup
 from config import CONFIGS, DEFAULT_CONFIG
 from update import update_daemon
 
-PATH_TO_CRONTAB = ""
+PATH_TO_CRONTAB = "/root/SS13/scripts/ss13.cron"
 
 def list_configs(args):
   count = 0
@@ -101,6 +101,7 @@ def _main():
   parser_restart_default = subparsers.add_parser("restart_default",
                                                  help="""Immediately kills (SIGKILL) the default daemon and starts
                                                          it again. Currently configured to: """ + CONFIGS[DEFAULT_CONFIG].path)
+  parser_restart_default.add_argument("-force", action="store_true", help="Sends SIGKILL instead of SIGTERM - Kills it outright")
   parser_restart_default.set_defaults(func=restart_default_daemon)
 
   parser_start_default = subparsers.add_parser("start_default",
