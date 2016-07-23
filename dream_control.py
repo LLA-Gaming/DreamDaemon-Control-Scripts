@@ -50,7 +50,7 @@ def restart_default_daemon(args):
   start_default_daemon(args)
 
 def edit_admins(args):
-  call(["nano", os.path.join(CONFIG[DEFAULT_CONFIG].path, "config/admins.txt")])
+  call(["nano", os.path.join(CONFIGS[DEFAULT_CONFIG].path, "config/admins.txt")])
 
 def backup(args):
   config = CONFIGS[args.config]
