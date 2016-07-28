@@ -1,7 +1,6 @@
 import os
 import subprocess
 import daemon
-from config import CONFIGS, DEFAULT_CONFIG
 
 def invoke_git(command, *args):
   process = subprocess.Popen(["git", command] + list(args), stdout=subprocess.PIPE, stderr=None)
@@ -23,18 +22,14 @@ def git_stash(command="save"):
 def git_fetch():
   invoke_git("fetch", "--all", "--tags")
 
-def is_git_repo(path):
-  return os.path.exists(os.path.join(path, ".git"))
-
 def compile(config):
   subprocess.call(["DreamMaker", config.dme])
 
 def update_daemon(config):
   original_dir = os.getcwd()
-  if not is_git_repo(config.path):
-    print("Target directory is not a git repository.")
-    return False
   os.chdir(config.path)
+
+  config.run_hook("pre_update")
 
   git_stash()
   git_fetch()
@@ -49,7 +44,8 @@ def update_daemon(config):
   git_checkout(version)
   git_stash("pop")
 
+  config.run_hook("post_update")
+
   compile(config)
 
   os.chdir(original_dir)
-  return True
