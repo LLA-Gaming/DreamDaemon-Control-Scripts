@@ -23,16 +23,17 @@ def sample_hook(config):
 CONFIGS = [
 Config(
   name="Test",
-  path="./test",
+  path="../TestStation",
   dmb="teststation.dmb",
   dme="tgstation.dme",
   port="52601",
   args=["-logself", "-trusted", "-unsafe_diag"],
+  config_file="config/config.txt",
   backup_files=["config/admins.txt", "config/names"],
   backup_dest="",
   hooks={
-    "pre_update": sample_hook,
-    "post_update": sample_hook
+    "pre_update": SS13.hooks.pre_update,
+    "post_update": SS13.hooks.post_update
   }
 )
 ]
