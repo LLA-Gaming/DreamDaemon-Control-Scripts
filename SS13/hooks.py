@@ -1,6 +1,9 @@
-import merge_config
-
 import os.path
+import sys
+
+import merge_config
+sys.path.append("..")
+import update as git
 
 saved_config = None
 
@@ -11,6 +14,9 @@ def pre_update(config):
     path_to_config_file = config.config_file
     print("SS13 Pre Update: Saving config file at " + path_to_config_file)
     saved_config = merge_config.parse_config(path_to_config_file)
+
+    print(git.invoke_git("checkout", "--", config.config_file))
+
 
 def post_update(config):
   if config.config_file:
