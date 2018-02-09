@@ -70,6 +70,7 @@ def stop_and_update(args):
 
 def _main():
   parser = argparse.ArgumentParser(description="Commands for controlling DreamDaemon instances")
+  parser.set_defaults(func=None)
   subparsers = parser.add_subparsers()
 
   parser_list_daemons = subparsers.add_parser("list_daemons", help="Lists all running daemons")
@@ -126,7 +127,10 @@ def _main():
 
 
   args = parser.parse_args()
-  args.func(args)
+  if args.func:
+    args.func(args)
+  else:
+    parser.print_help()
 
 if __name__ == "__main__":
   _main()
