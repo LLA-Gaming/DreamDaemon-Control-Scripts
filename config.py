@@ -20,11 +20,14 @@ class Config:
 def sample_hook(config):
   print("Hello from the Sample Hook!")
 
+DD_INSTALL_PATH = "/usr/local/byond/bin/DreamDaemon"
+PATH_TO_CRONTAB = "/root/SS13/scripts/ss13.cron"
+
 CONFIGS = [
 Config(
   name="Test",
-  path="../TestStation",
-  dmb="teststation.dmb",
+  path="../tgstation",
+  dmb="tgstation.dmb",
   dme="tgstation.dme",
   port="52601",
   args=["-logself", "-trusted", "-unsafe_diag"],

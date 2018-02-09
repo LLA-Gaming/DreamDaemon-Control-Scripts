@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 
 import argparse
 import daemon
@@ -6,10 +6,8 @@ from os.path import basename
 from subprocess import call
 from daemon import *
 from backup import make_backup
-from config import CONFIGS, DEFAULT_CONFIG
+from config import CONFIGS, DEFAULT_CONFIG, PATH_TO_CRONTAB
 from update import update_daemon
-
-PATH_TO_CRONTAB = "/root/SS13/scripts/ss13.cron"
 
 def list_configs(args):
   count = 0

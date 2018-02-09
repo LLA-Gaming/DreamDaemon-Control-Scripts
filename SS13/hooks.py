@@ -1,7 +1,7 @@
 import os.path
 import sys
 
-import merge_config
+import SS13.merge_config as merge_config
 sys.path.append("..")
 import update as git
 

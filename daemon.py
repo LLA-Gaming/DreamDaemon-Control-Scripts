@@ -1,9 +1,9 @@
 import psutil
 import os
 from os.path import basename
+from config import DD_INSTALL_PATH
 
 PROCESS_NAME = "DreamDaemon"
-DD_INSTALL_PATH = "/usr/local/byond/bin/DreamDaemon"
 
 def create_daemon(args):
   """
