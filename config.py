@@ -21,6 +21,7 @@ def sample_hook(config):
   print("Hello from the Sample Hook!")
 
 DD_INSTALL_PATH = "/usr/local/byond/bin/DreamDaemon"
+DM_INSTALL_PATH = "/usr/local/byond/bin/DreamMaker"
 PATH_TO_CRONTAB = "/root/SS13/scripts/ss13.cron"
 
 CONFIGS = [
