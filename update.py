@@ -1,11 +1,12 @@
 import os
 import subprocess
 import daemon
+import locale
 
 def invoke_git(command, *args):
   process = subprocess.Popen(["git", command] + list(args), stdout=subprocess.PIPE, stderr=None)
   process.wait()
-  return process.communicate()[0]
+  return process.communicate()[0].decode(locale.getpreferredencoding(False))
 
 def git_latest_version():
   all_tags = invoke_git("tag", "-l").split("\n")
