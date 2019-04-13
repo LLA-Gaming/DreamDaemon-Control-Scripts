@@ -2,6 +2,7 @@ import os
 import subprocess
 import daemon
 import locale
+from config import DM_INSTALL_PATH
 
 def invoke_git(command, *args):
   process = subprocess.Popen(["git", command] + list(args), stdout=subprocess.PIPE, stderr=None)
@@ -24,7 +25,7 @@ def git_fetch():
   invoke_git("fetch", "--all", "--tags")
 
 def compile(config):
-  subprocess.call(["DreamMaker", config.dme])
+  subprocess.call([DM_INSTALL_PATH, config.dme])
 
 def update_daemon(config):
   original_dir = os.getcwd()
